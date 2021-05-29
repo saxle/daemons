@@ -1,0 +1,20 @@
+{
+    "scripts": {
+        "types": "typechain --target ethers-v5 --outDir types/typechain \"artifacts/!(build-info)/**/+([a-zA-Z0-9_]).json\""
+    },
+    "dependencies": {
+        "@nomiclabs/hardhat-ethers": "^2.0.2",
+        "@nomiclabs/hardhat-waffle": "^2.0.1",
+        "@types/mocha": "^8.2.2",
+        "@types/node": "^15.6.1",
+        "chai": "^4.3.4",
+        "ethereum-waffle": "^3.3.0",
+        "ethers": "^5.2.0",
+        "hardhat": "^2.3.0",
+        "mocha": "^8.4.0",
+        "ts-node": "^10.0.0",
+        "typechain": "^4.0.0",
+        "typechain-target-ethers-v5": "^5.0.1",
+        "typescript": "^4.3.2"
+    }
+}

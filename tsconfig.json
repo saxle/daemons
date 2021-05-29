@@ -1,0 +1,8 @@
+{
+    "include": ["test", "src", "types"],
+    "files": ["hardhat.config.ts"],
+    "compilerOptions": {
+        "target": "ES2020",
+        "moduleResolution": "node"
+    }
+}
