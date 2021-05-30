@@ -4,7 +4,6 @@ import { noteCode } from '../src/notes';
 import { ethers } from 'hardhat';
 import { FactoryMock, FallbackLogger } from '../types/typechain';
 import { Signer } from '@ethersproject/abstract-signer';
-import { expect } from 'chai';
 import { daemonCode } from '../src/daemons';
 
 chai.use(solidity);
