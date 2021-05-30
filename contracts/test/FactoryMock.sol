@@ -21,39 +21,46 @@ pragma solidity ^0.8.4;
 import { Factory } from '../Factory.sol';
 
 contract FactoryMock is Factory {
+    event Deployment(address indexed instance);
+
     function clone(address target, bytes32 id)
         public
         returns (address instance)
     {
-        return _clone(target, id);
+        instance = _clone(target, id);
+        emit Deployment(instance);
     }
 
     function makeNote(bytes memory initCode, bytes32 id)
         public
         returns (address note)
     {
-        return _makeNote(initCode, id);
+        note = _makeNote(initCode, id);
+        emit Deployment(note);
     }
 
     function makeDaemon(bytes memory initCode, bytes32 id)
         public
         returns (address daemon)
     {
-        return _makeDaemon(initCode, id);
+        daemon = _makeDaemon(initCode, id);
+        emit Deployment(daemon);
     }
 
     function deploy(bytes32 id) public returns (address deployment) {
-        return _deploy(id);
+        deployment = _deploy(id);
+        emit Deployment(deployment);
     }
 
     function implement(bytes memory initCode)
         public
         returns (address implementation)
     {
-        return _implement(initCode);
+        implementation = _implement(initCode);
+        emit Deployment(implementation);
     }
 
     function storeImplementation(address implementation) public {
-        return _storeImplementation(implementation);
+        _storeImplementation(implementation);
     }
 }

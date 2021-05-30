@@ -42,7 +42,9 @@ export function noteCode(
     }
 
     // Data block starts off with 32 bytes of big-endian number constant k.
-    let dataBlock = ethers.utils.hexZeroPad(k.toString(16), 32);
+    let dataBlock = ethers.utils
+        .hexZeroPad('0x' + k.toString(16), 32)
+        .substr(2);
 
     // For each target, check that the address is valid.
     // Then, append the address' bytes to the data block.
@@ -50,7 +52,7 @@ export function noteCode(
         if (!ethers.utils.isAddress(target)) {
             throw 'Target isnt valid address ' + target;
         }
-        dataBlock += target.substr(2);
+        dataBlock += target.substr(2).toLowerCase();
     });
 
     // If the provided controller address isn't valid, throw.
@@ -65,17 +67,15 @@ export function noteCode(
     // Padding to 1 byte in case the program counter is smaller than 2 ** 4 -1.
     // This value is equal to the length of the runtime code minus the length
     // of the error block, so the core code's length and the sd block's length.
-    const errorBlockProgramCounter = ethers.utils.hexZeroPad(
-        '0x' +
-            (
-                Number('0x' + coreCodeLength) + Number('0x' + sdBlockLength)
-            ).toString(16),
-        1
-    );
-    /**
-     * The below setup code is not needed due to how metamorphic contracts are
-     * deployed.
-     */
+    const errorBlockProgramCounter = ethers.utils
+        .hexZeroPad(
+            '0x' +
+                (
+                    Number('0x' + coreCodeLength) + Number('0x' + sdBlockLength)
+                ).toString(16),
+            1
+        )
+        .substr(2);
 
     const errorBlockLength = '2b';
 
@@ -85,16 +85,18 @@ export function noteCode(
     // In our case the setup code returns the rest of the code, so the runtime
     // code's length is the sum of the length of the core code, sd block, error
     // block and data block.
-    const runtimeCodeLength = ethers.utils.hexZeroPad(
-        '0x' +
-            (
-                Number('0x' + coreCodeLength) +
-                Number('0x' + sdBlockLength) +
-                Number('0x' + errorBlockLength) +
-                dataBlock.length / 2
-            ).toString(16),
-        2
-    );
+    const runtimeCodeLength = ethers.utils
+        .hexZeroPad(
+            '0x' +
+                (
+                    Number('0x' + coreCodeLength) +
+                    Number('0x' + sdBlockLength) +
+                    Number('0x' + errorBlockLength) +
+                    dataBlock.length / 2
+                ).toString(16),
+            2
+        )
+        .substr(2);
 
     // Hexadecimal length of the setup code in bytes.
     const setupCodeLength = '0b';
@@ -180,8 +182,9 @@ export function noteCode(
         // Jump to the error block.
         JUMP;
 
-    // The runtimeCode code.
+    // The runtime code.
     return (
+        '0x' +
         setupCode +
         coreCode +
         sdBlock(controller, errorBlockProgramCounter) +
@@ -228,7 +231,7 @@ const sdBlock = (controller: string, errorBlockProgramCounter: string) => {
         wrongCallerErr +
         DUP2 +
         PUSH20 +
-        controller +
+        controller.substr(2).toLowerCase() +
         EQ +
         ISZERO +
         PUSH1 +
@@ -246,3 +249,77 @@ const sdBlock = (controller: string, errorBlockProgramCounter: string) => {
         RETURN
     );
 };
+
+/**
+ * 3d
+ * 61
+ * 0161
+ * 80
+ * 60
+ * 0b
+ * 3d
+ * 39
+ * 81
+ * f3
+ * 60
+ * 01
+ * 60
+ * 5d
+ * 7f
+ * 0000000100000000000000000000000000000000000000000000000000000000
+ * 3d
+ * 35
+ * 04
+ * 14
+ * 60
+ * 2f
+ * 57
+ * 60
+ * 58
+ * 56
+ * 5b
+ * 33
+ * 60
+ * 02
+ * 81
+ * 73
+ * 70997970C51812dc3A010C7d01b50e0d17dc79C8
+ * 14
+ * 15
+ * 60
+ * 58
+ * 57
+ * 50
+ * ff
+ * 60
+ * 5d
+ * 3d
+ * 52
+ * 60
+ * 20
+ * 3d
+ * f3
+ * 5b
+ * 7f
+ * ee00000000000000000000000000000000000000000000000000000000000000
+ * 01
+ * 60
+ * 00
+ * 52
+ * 60
+ * 20
+ * 60
+ * 00
+ * fd
+ * 000000000000000000000000000000000000000000000000000000000000000a
+ * f1725e7734ce288f8367e1bb143e90bb3f0512
+ * f1725e7734ce288f8367e1bb143e90bb3f0512
+ * f1725e7734ce288f8367e1bb143e90bb3f0512
+ * f1725e7734ce288f8367e1bb143e90bb3f0512
+ * f1725e7734ce288f8367e1bb143e90bb3f0512
+ * f1725e7734ce288f8367e1bb143e90bb3f0512
+ * f1725e7734ce288f8367e1bb143e90bb3f0512
+ * f1725e7734ce288f8367e1bb143e90bb3f0512
+ * f1725e7734ce288f8367e1bb143e90bb3f0512
+ * f1725e7734ce288f8367e1bb143e90bb3f0512
+ */
