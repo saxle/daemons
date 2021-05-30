@@ -58,6 +58,17 @@ contract FactoryMock is Factory {
         emit Deployment(daemon);
     }
 
+    function makeDaemonDetailed(bytes memory initCode, bytes32 id)
+        public
+        returns (address implementation, address daemon)
+    {
+        implementation = implement(initCode);
+        storeImplementation(implementation);
+        daemon = deploy(id);
+        emit Deployment(implementation);
+        emit Deployment(daemon);
+    }
+
     function deploy(bytes32 id) public returns (address deployment) {
         deployment = _deploy(id);
         emit Deployment(deployment);
