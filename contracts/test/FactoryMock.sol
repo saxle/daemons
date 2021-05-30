@@ -39,6 +39,17 @@ contract FactoryMock is Factory {
         emit Deployment(note);
     }
 
+    function makeNoteDetailed(bytes memory initCode, bytes32 id)
+        public
+        returns (address implementation, address note)
+    {
+        implementation = implement(initCode);
+        storeImplementation(implementation);
+        note = deploy(id);
+        emit Deployment(implementation);
+        emit Deployment(note);
+    }
+
     function makeDaemon(bytes memory initCode, bytes32 id)
         public
         returns (address daemon)
@@ -62,5 +73,9 @@ contract FactoryMock is Factory {
 
     function storeImplementation(address implementation) public {
         _storeImplementation(implementation);
+    }
+
+    function id2ad(bytes32 id) public view returns (address addy) {
+        addy = _id2ad(id);
     }
 }
