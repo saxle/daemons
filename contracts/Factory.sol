@@ -22,29 +22,36 @@ pragma solidity ^0.8.4;
 bytes constant mmCode = hex'5860208158601c335a63aaf10f428752fa158151803b80938091923cf3';
 bytes32 constant mmCodeHash = keccak256(mmCode);
 
-contract Factory {
+abstract contract Factory {
     bytes32 public constant IMPLEMENTATION_SLOT =
         keccak256('daemons.implementationSlot');
 
-    function clone(address target, bytes32 id)
+    function getImplementation() public view returns (address implementation) {
+        bytes32 implementationSlot = IMPLEMENTATION_SLOT;
+        assembly {
+            implementation := sload(implementationSlot)
+        }
+    }
+
+    function _clone(address target, bytes32 id)
         internal
         returns (address instance)
     {
-        storeImplementation(target);
-        instance = deploy(id);
+        _storeImplementation(target);
+        instance = _deploy(id);
     }
 
-    function makeNote(bytes memory initCode, bytes32 id)
+    function _makeNote(bytes memory initCode, bytes32 id)
         internal
         returns (address note)
     {
-        storeImplementation(implement(initCode));
-        note = deploy(id);
+        _storeImplementation(_implement(initCode));
+        note = _deploy(id);
     }
 
     /**
         Makes a daemon from initCode and an id.
-        @dev Please make sure to run the correct TypeScript function to generate
+        @dev Please make sure to run the correct TypeScript function _to generate
         the initCode.
         @dev Although daemons are deployed using the metamorphic strategy, in
         almost all cases it should never be destroyed and redeployed. This would
@@ -56,23 +63,23 @@ contract Factory {
         controller.
         @return daemon address
      */
-    function makeDaemon(bytes memory initCode, bytes32 id)
+    function _makeDaemon(bytes memory initCode, bytes32 id)
         internal
         returns (address daemon)
     {
-        storeImplementation(implement(initCode));
-        daemon = deploy(id);
+        _storeImplementation(_implement(initCode));
+        daemon = _deploy(id);
     }
 
-    function deploy(bytes32 id) internal returns (address deployment) {
+    function _deploy(bytes32 id) internal returns (address deployment) {
         bytes memory initCode = mmCode;
         assembly {
             deployment := create2(0, add(initCode, 0x20), mload(initCode), id)
         }
-        if (deployment != id2ad(id)) revert('Bad deployment');
+        if (deployment != _id2ad(id)) revert('Bad deployment');
     }
 
-    function implement(bytes memory initCode)
+    function _implement(bytes memory initCode)
         internal
         returns (address implementation)
     {
@@ -82,14 +89,14 @@ contract Factory {
         if (implementation == address(0)) revert('Bad deployment');
     }
 
-    function storeImplementation(address implementation) internal {
+    function _storeImplementation(address implementation) internal {
         bytes32 implementationSlot = IMPLEMENTATION_SLOT;
         assembly {
             sstore(implementationSlot, implementation)
         }
     }
 
-    function id2ad(bytes32 id) internal view returns (address addy) {
+    function _id2ad(bytes32 id) internal view returns (address addy) {
         return
             address(
                 uint160(
