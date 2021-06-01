@@ -2,15 +2,19 @@
     "name": "@saxle/daemons",
     "version": "0.0.0",
     "description": "Daemon Contracts",
-    "license": "MIT",
+    "repository": "https://github.com/saxle/daemons",
     "author": "Jeremi G. <jeremig@saxle.io>",
-    "files": "contracts/Factory.sol",
+    "license": "MIT",
+    "files": [
+        "dist"
+    ],
     "scripts": {
         "test": "hardhat test",
         "compile": "hardhat compile",
-        "types": "typechain --target ethers-v5 --outDir types/typechain \"artifacts/!(build-info)/**/+([a-zA-Z0-9_]).json\""
+        "types": "typechain --target ethers-v5 --outDir types/typechain \"artifacts/!(build-info)/**/+([a-zA-Z0-9_]).json\"",
+        "pre-semantic-release": "rm -rf dist && mkdir -p dist/artifacts dist/typechain dist/contracts && yarn hardhat compile && yarn tsc -P tsconfig.build.json && cp -r artifacts/contracts dist/artifacts/ && rm -r dist/artifacts/contracts/mock && yarn types-not-mock && cp -r contracts/Factory.sol dist/contracts/",
+        "types-not-mock": "typechain --target ethers-v5 --outDir dist/typechain \"dist/artifacts/contracts/**/+([a-zA-Z0-9_]).json\""
     },
-    "repository": "https://github.com/saxle/daemons",
     "dependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.2",
         "@nomiclabs/hardhat-waffle": "^2.0.1",
