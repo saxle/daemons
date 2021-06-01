@@ -16,20 +16,32 @@
     OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
     USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 pragma solidity ^0.8.4;
 
-import { console } from 'hardhat/console.sol';
-
 contract FallbackLogger {
+    bytes32 constant slot = keccak256('slot');
+
+    function getVal() external view returns (uint256) {
+        bytes32 sllt = slot;
+        uint256 val;
+        assembly {
+            val := sload(sllt)
+        }
+        return val;
+    }
+
+    function setVal() external {
+        bytes32 sllt = slot;
+        assembly {
+            sstore(sllt, 42)
+        }
+    }
+
     fallback() external {
-        console.log(string(msg.data));
         assembly {
             mstore(0, calldataload(0))
             return(0, 0x20)
         }
     }
 }
-
-/**
-0x3d61016b80600b3d3981f36001605d7f00000001000000000000000000000000000000000000000000000000000000003d350414602f576058565b336002817370997970c51812dc3a010c7d01b50e0d17dc79c8141560585750ff605d3d5260203df35b7fee000000000000000000000000000000000000000000000000000000000000000160005260206000fd000000000000000000000000000000000000000000000000000000000000000aD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771BD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771BD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771BD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771BD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771BD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771BD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771BD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771BD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771BD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771B
- */

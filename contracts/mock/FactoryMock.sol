@@ -31,42 +31,23 @@ contract FactoryMock is Factory {
         emit Deployment(instance);
     }
 
-    function makeNote(bytes memory initCode, bytes32 id)
+    function make(bytes memory initCode, bytes32 id)
         public
-        returns (address note)
+        returns (address metamorphic)
     {
-        note = _makeNote(initCode, id);
-        emit Deployment(note);
+        metamorphic = _make(initCode, id);
+        emit Deployment(metamorphic);
     }
 
-    function makeNoteDetailed(bytes memory initCode, bytes32 id)
+    function makeDetailed(bytes memory initCode, bytes32 id)
         public
-        returns (address implementation, address note)
+        returns (address implementation, address metamorphic)
     {
         implementation = implement(initCode);
         storeImplementation(implementation);
-        note = deploy(id);
+        metamorphic = deploy(id);
         emit Deployment(implementation);
-        emit Deployment(note);
-    }
-
-    function makeDaemon(bytes memory initCode, bytes32 id)
-        public
-        returns (address daemon)
-    {
-        daemon = _makeDaemon(initCode, id);
-        emit Deployment(daemon);
-    }
-
-    function makeDaemonDetailed(bytes memory initCode, bytes32 id)
-        public
-        returns (address implementation, address daemon)
-    {
-        implementation = implement(initCode);
-        storeImplementation(implementation);
-        daemon = deploy(id);
-        emit Deployment(implementation);
-        emit Deployment(daemon);
+        emit Deployment(metamorphic);
     }
 
     function deploy(bytes32 id) public returns (address deployment) {
