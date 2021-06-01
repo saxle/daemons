@@ -32,10 +32,10 @@ export function noteCode(
     controller: string
 ): string {
     // 24 kb constant for checking if note exceeds max contract size.
-    const kb_24 = 24n * 8n * 1000n;
+    const kb_24 = BigInt(24) * BigInt(8) * BigInt(1000);
 
     // Throw if contract would be bigger than max contract size.
-    if (k * 20n - 100n > kb_24) {
+    if (k * BigInt(20) - BigInt(100) > kb_24) {
         throw 'k too large ' + k;
     }
 
