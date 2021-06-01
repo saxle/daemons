@@ -1,7 +1,15 @@
 {
+    "name": "@saxle/daemons",
+    "version": "0.1.0",
+    "license": "MIT",
+    "author": "Jeremi G. <jeremig@saxle.io>",
+    "files": "contracts/Factory.sol",
     "scripts": {
+        "test": "hardhat test",
+        "compile": "hardhat compile",
         "types": "typechain --target ethers-v5 --outDir types/typechain \"artifacts/!(build-info)/**/+([a-zA-Z0-9_]).json\""
     },
+    "repository": "https://github.com/saxle/daemons",
     "dependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.2",
         "@nomiclabs/hardhat-waffle": "^2.0.1",
