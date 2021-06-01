@@ -1,6 +1,7 @@
 {
     "name": "@saxle/daemons",
     "version": "0.0.0",
+    "description": "Daemon Contracts",
     "license": "MIT",
     "author": "Jeremi G. <jeremig@saxle.io>",
     "files": "contracts/Factory.sol",
